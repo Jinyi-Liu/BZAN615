@@ -1,0 +1,188 @@
+\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[version=4]{mhchem}
+\usepackage{stmaryrd}
+\usepackage{bbold}
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+
+\title{BZAN 615 - Homework 1 }
+
+\author{Jinyi Liu}
+\date{}
+
+
+\begin{document}
+\maketitle
+Due: February 16, 2024
+
+\section*{1 Absolute Error Loss}
+Show that the function $f_{0}(x)$ that minimizes expected prediction error with the absolute error loss $L(Y, f(X)))=|Y-f(X)|$ is given by
+
+$$
+f_{0}(x)=\operatorname{median}(Y \mid X=x)
+$$
+
+where the median is defined by the equation $\mathbb{P}(Z \geq \operatorname{median}(Z))=1 / 2$.
+
+% Hints:
+
+% \begin{itemize}
+%   \item You can use the decomposition of the absolute value function: $|x|=$ $x_{+}+(-x)_{+}$where $x_{+}=x$ if $x>0$ and $x_{+}=0$ if $x \leq 0$.
+%   \item $\mathbb{E}[Z]=\int_{0}^{\infty} \mathbb{P}(Z \geq t) d t$ for any posive random variable $Z$.
+% \end{itemize}
+\begin{proof}
+    We have
+    \begin{align*}
+        EPE(Y)(f)&=E|Y-f|\\
+        &=E(Y-f)_{+}+E(f-Y)_{+}\\
+        &=\int_{0}^{\infty} \mathbb{P}(Y-f \geq t) d t + \int_{0}^{\infty} \mathbb{P}(f-Y \geq t) d t\\
+        &=\int_{0}^{\infty} F_f(Y-t)+(1-F_f(Y+t)) dt
+    \end{align*}
+    Then we have
+    \begin{align*}
+       0 &= \partial EPE(Y)/\partial f \\
+        &= \int_{0}^{\infty} \mathbb{P}(f=Y-t)-\mathbb{P}(f=Y+t) dt,
+    \end{align*}
+    which means that
+    \[\mathbb{P}(f\geq Y)=\mathbb{P}(f\leq Y)=1-\mathbb{P}(f\geq Y)\Rightarrow \mathbb{P}(Y\geq f)=\frac{1}{2},\]
+    i.e., the minimizer of $EPE(Y)(f)$ is the median of $Y$.
+\end{proof}
+\begin{proof}
+    In the following we denote $F(f)\equiv F_Y(f) = \mathbb{P}(Y\leq f)$.
+    \begin{align*}
+        EPE(Y)(f)&=E|Y-f|\\
+        &=E(Y-f)_{+}+E(f-Y)_{+}\\
+        &=\int_{f}^{\infty} (y-f) dF(y)+\int_{-\infty}^{f} (f-y) dF(y)\\
+        &=\int_{f}^{\infty} y dF(y)-f\int_{f}^{\infty} dF(y)+f\int_{-\infty}^{f} dF(y)-\int_{-\infty}^{f} y dF(y)\\
+        &=\int_{f}^{\infty} y dF(y)-f(1-F(f))+F(f)f-\int_{-\infty}^{f} y dF(y)
+    \end{align*}
+    Then we have
+    \begin{align*}
+        \frac{\partial EPE(Y)}{\partial f}&= -f P(Y=f)-((1-F(f) - f P(Y=f)))+P(Y=f)f+F(f)-fP(Y=f)\\
+        &=-f P(Y=f)-1+F(f)+P(Y=f)f+P(Y=f)f+F(f)-fP(Y=f)\\
+        &=-1+F(f)+F(f)\\
+        &=0
+        \Rightarrow F(f)=\frac{1}{2}.
+    \end{align*}
+\end{proof}
+
+
+\section*{2 Linear Function Space with Absolute Error Loss}
+Consider the case where input $x$ is one-dimensional, and the sample size is 3. Let $a$ be a real number. Let the data values be $\left(x_{1}, x_{2}, x_{3}\right)=(1,1,1)$ and $\left(y_{1}, y_{2}, y_{3}\right)=(1,2, a)$
+
+\begin{enumerate}
+  \item Find the linear function $f_{\beta}(x)=\beta x$ that minimizes the sample EPE under Squared error loss, call the minimizer $\beta_{S E}$.
+  \begin{proof}
+    We have 
+    \begin{align*}
+      sEPE(f)(\beta)&=\hat{E}\left[(Y-f(X))^2\right]\\
+      &=\frac{1}{3}\left( (1-\beta x)^2 +(2-\beta x)^2+(a-\beta x)^2 \right)\\
+      &=\frac{1}{3}\left( 1-2\beta x+\beta^2x^2 +4-4\beta x+\beta^2x^2+a^2-2a\beta x+\beta^2x^2 \right)\\
+      &=\frac{1}{3}\left( 5-6\beta x+3\beta^2x^2 +a^2-2a\beta x \right)\\
+      &=\frac{1}{3}\left( 5-6\beta+3\beta^2 +a^2-2a\beta \right).
+    \end{align*}
+    Then we have
+    \begin{align*}
+      \frac{\partial sEPE(f)}{\partial \beta}&=-6+6\beta-2a=0\\
+      \Rightarrow \beta_{SE}&=\frac{3+a}{3}.
+    \end{align*}
+
+  \end{proof}
+
+  \item Find the linear function $f_{\beta}(x)=\beta x$ that minimizes the sample EPE under Absolute Error Loss, call the minimizer $\beta_{A E}$.
+  \begin{proof}
+    We have 
+  \begin{align*}
+    sEPE(f)(\beta)&=\hat{E}\left[|Y-f(X)|\right]\\
+    &=\frac{1}{3}\left( |1-\beta x| +|2-\beta x|+|a-\beta x| \right)\\
+    &=\frac{1}{3}\left( |1-\beta| +|2-\beta|+|a-\beta| \right).
+  \end{align*}
+  By Problem 1, we have $\beta_{AE}=\operatorname{median}(1,2,a)$.
+
+  \end{proof}
+  \item Choose appropriate $a$ to make $\beta_{S E} \neq \beta_{A E}$. Deduce that 'best' linear function depends on how we define 'best'.
+  \begin{proof}
+    Choose $a=2$, then we have $\beta_{SE}=\frac{5}{3}$ and $\beta_{AE}=2$. Then we have $\beta_{SE} \neq \beta_{AE}$.
+  \end{proof}
+
+\end{enumerate}
+
+\section*{3 Curse of Dimensionality}
+Let $\mathbf{x}_{i}$ be a random vector in $p$-dimensional space for each $i \in\{1, \cdots, n\}$. Each $\mathbf{x}_{i}$ is uniformly chosen from $p$ dimensional unit cube (in other words components of the vector are indpendent and chosen from the interval $[0,1]$.)
+
+We define a neighborhood around zero
+
+$$
+N(\delta)=\left\{\mathbf{x} \in \mathbb{R}^{p}:\left|\mathbf{x}_{j}\right|<\delta \text { for all } j \in\{1, \cdots, p\}\right\}
+$$
+
+In other words, $N(\delta)$ is a cube with side length $\delta$ whose one corner is at the origin.
+
+\begin{enumerate}
+  \item What is the probability that $\mathbf{x}_{1} \in N(\delta)$ ?
+    \begin{proof}
+        We have
+        \begin{align*}
+            \mathbb{P}(\mathbf{x}_{1} \in N(\delta))&=\mathbb{P}(\mathbf{x}_{1,1} \in [0,\delta])\mathbb{P}(\mathbf{x}_{1,2} \in [0,\delta])\cdots \mathbb{P}(\mathbf{x}_{1,p} \in [0,\delta])\\
+            &=\delta^p.
+        \end{align*}
+    \end{proof}
+  \item What is the expected number of $\mathbf{x}_{i}$ that falls inside $N(\delta)$ ?
+    \begin{proof}
+        We have
+        \begin{align*}
+            \mathbb{E}(\text{number of }\mathbf{x}_{i} \text{ in } N(\delta))&=n\mathbb{P}(\mathbf{x}_{1} \in N(\delta))\\
+            &=n\delta^p.
+        \end{align*}
+    \end{proof}
+  \item Now choose $n=1000, p=100$ and $\delta=0.01$. Compute the value in question 2
+    \begin{proof}
+        We have
+        \[\mathbb{E}(\text{number of }\mathbf{x}_{i} \text{ in } N(\delta))=1000\times 0.01^{100}=10^{-200}.\]
+    \end{proof}
+  \item Comment on how answers in part 2 and 3 relate to the curse of dimensionality.
+    \begin{proof}
+        The expected number of $\mathbf{x}_{i}$ that falls inside $N(\delta)$ is decreasing exponentially as the dimension $p$ increases. This is the curse of dimensionality.
+    \end{proof}
+\end{enumerate}
+
+\section*{4 Linear Algebra - Review}
+If $\mathbf{A}$ is a $n$ by $n$ matrix, and $x$ is a $n$ dimensional column vector. Define $\Psi(x)=x^{T} \mathbf{A} x$.
+
+\begin{enumerate}
+  \item Write $\Psi(x)$ as a summation of $x_{i}$ 's.
+\begin{proof}
+    We have
+    \begin{align*}
+        \Psi(x)&=x^{T} \mathbf{A} x\\
+        &=\sum_{i=1}^{n} x_{i}(\mathbf{A} x)_{i}\\
+        &=\sum_{i=1}^{n} x_{i}\sum_{j=1}^{n} \mathbf{A}_{ij}x_{j}\\
+        &=\sum_{i=1}^{n}\sum_{j=1}^{n} \mathbf{A}_{ij}x_{i}x_{j}.
+    \end{align*}
+\end{proof}
+  \item Compute $\frac{\partial \Psi}{\partial x_{i}}(x)$
+    \begin{proof}
+        We have
+        \begin{align*}
+            \frac{\partial \Psi}{\partial x_{i}}(x)&=\frac{\partial}{\partial x_{i}}\left(\sum_{i=1}^{n}\sum_{j=1}^{n} \mathbf{A}_{ij}x_{i}x_{j}\right)\\
+            &=\sum_{j=1}^{n} \mathbf{A}_{ij}x_{j}+\sum_{j=1}^{n} \mathbf{A}_{ji}x_{j}\\
+            &=\sum_{j=1}^{n} \mathbf{A}_{ij}x_{j}+\sum_{j=1}^{n} \mathbf{A}_{ji}x_{j}\\
+            &=\sum_{j=1}^{n} (\mathbf{A}_{ij}+\mathbf{A}_{ji})x_{j}\\
+            &=\sum_{j=1}^{n} (\mathbf{A}+\mathbf{A}^{T})_{ij}x_{j}.
+        \end{align*}
+    \end{proof}
+  \item Express $\nabla \Psi(x)=\frac{\partial}{\partial x} \Psi(x)$ in a vector notation.
+    \begin{proof}
+        We have
+        \begin{align*}
+            \nabla \Psi(x)&=(\mathbf{A}+\mathbf{A}^{T})x.
+        \end{align*}
+    \end{proof}
+\end{enumerate}
+
+\end{document}

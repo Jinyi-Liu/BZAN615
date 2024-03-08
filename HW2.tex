@@ -1,0 +1,164 @@
+\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[version=4]{mhchem}
+\usepackage{stmaryrd}
+\usepackage{bbold}
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\E}{\mathbb{E}}
+
+\title{BZAN 615 - Homework 2 }
+
+\author{}
+\date{}
+
+
+\begin{document}
+\maketitle
+Due: March 8, 2024
+
+\section*{1 Variance of the Least Squares}
+Show that
+
+$$
+\mathbb{E}\left[\left(x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} \epsilon\right)^{2}\right]=\sigma^{2} \mathbb{E}\left[x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}\right]
+$$
+
+where $\epsilon$ is the error term that is independen of $\mathbf{X}$ and $x_{0}$ and follows multivariate normal distribution with independent components and common variance of $\sigma^{2} . \mathbf{X}$ is $n$ by $p$ data matrix, and $x_{0}$ is the indepenent new $p$ dimensional observation.
+\begin{proof}
+    We have
+    \begin{align*}
+        \mathbb{E}\left[\left(x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} \epsilon\right)^{2}\right] &= \mathbb{E}\left[\left(x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} \epsilon\right)^{T}\left(x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} \epsilon\right)\right]\\
+        &= \mathbb{E}\left[\epsilon^{T}\mathbf{X}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} \epsilon\right]\\
+        &= \mathbb{E}\left[tr\left(\epsilon^{T}\mathbf{X}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} \epsilon\right)\right]\\
+        & = \mathbb{E}\left[tr\left(\mathbf{X}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} \epsilon\epsilon^{T}\right)\right]\\
+    % (\text{Skip one trace transformation})    &= \mathbb{E}\left[tr\left(\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} \epsilon\epsilon^{T}\mathbf{X}\right)\right]\\
+    \text{(Independence)}    &= \mathbb{E}\left[tr\left(\mathbf{X}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} (\sigma^{2}\mathbf{I})\right)\right]\\
+    &= \sigma^2 \mathbb{E}\left[tr\left(\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} \mathbf{X}\right)\right]\\
+        &= \sigma^{2} \mathbb{E}\left[tr\left(\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\right)\right]\\
+    (tr(BA^T)=tr(A^TB))    &= \sigma^{2} \mathbb{E}\left[tr\left(x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}\right)\right]\\
+        &= \sigma^{2} \mathbb{E}\left[x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}\right].
+    \end{align*}
+\end{proof}
+
+
+\section*{2 Ridge Regression}
+Recall that the Ridge regression estimator is given by
+
+$$
+\hat{\beta}^{\text {ridge }}=\arg \min _{\beta} R S S(\beta)+\lambda\|\beta\|_{2}^{2} \text {. }
+$$
+
+Then, show that the explicit solution of this equation is given by
+
+$$
+\hat{\beta}^{\text {ridge }}=\left(\mathbf{X}^{T} \mathbf{X}+\lambda \mathbf{I}\right)^{-1} \mathbf{X}^{T} \mathbf{Y}
+$$
+\begin{proof}
+    Denoting $f(\beta) = (\mathbf{Y}-\mathbf{X}\beta)^{T}(\mathbf{Y}-\mathbf{X}\beta)+\lambda\beta^{T}\beta$, we have
+\begin{align*}
+    \argmin_{\beta} f(\beta) &= \argmin_{\beta} (\mathbf{Y}-\mathbf{X}\beta)^{T}(\mathbf{Y}-\mathbf{X}\beta)+\lambda\beta^{T}\beta\\
+    &= \argmin_{\beta} \mathbf{Y}^{T}\mathbf{Y}-\mathbf{Y}^{T}\mathbf{X}\beta-\beta^{T}\mathbf{X}^{T}\mathbf{Y}+\beta^{T}\mathbf{X}^{T}\mathbf{X}\beta+\lambda\beta^{T}\beta\\
+    &= \argmin_{\beta} \mathbf{Y}^{T}\mathbf{Y}-2\mathbf{Y}^{T}\mathbf{X}\beta+\beta^{T}\mathbf{X}^{T}\mathbf{X}\beta+\lambda\beta^{T}\beta.
+\end{align*}
+Then we have
+\begin{align*}
+    0=\frac{\partial f(\beta)}{\partial \beta} &= -2\mathbf{X}^{T}\mathbf{Y}+2\mathbf{X}^{T}\mathbf{X}\beta+2\lambda\beta\\
+    \Rightarrow 0 &= -\mathbf{X}^{T}\mathbf{Y}+\mathbf{X}^{T}\mathbf{X}\beta+\lambda\beta\\
+    \Rightarrow \mathbf{X}^{T}\mathbf{X}\beta+\lambda\beta &= \mathbf{X}^{T}\mathbf{Y}\\
+    \Rightarrow (\mathbf{X}^{T}\mathbf{X}+\lambda\mathbf{I})\beta &= \mathbf{X}^{T}\mathbf{Y}\\
+    \Rightarrow \beta &= (\mathbf{X}^{T}\mathbf{X}+\lambda\mathbf{I})^{-1}\mathbf{X}^{T}\mathbf{Y},
+\end{align*}
+where the last step is valid since $\mathbf{X}^{T}\mathbf{X}+\lambda\mathbf{I}$ is invertible if $\lambda > 0$.
+\end{proof}
+
+
+\section*{3 Lasso Coefficient Profile}
+When $\mathbf{X}$ has otrhonormal columns (i.e. $\mathbf{X}^{T} \mathbf{X}=\mathbf{I}_{p}$ ), complete the proof that $\hat{\beta}_{j}^{\text {lasso }}=\operatorname{sign}\left(\hat{\beta}^{l r}\right)\left(\left|\hat{\beta}^{l r}\right|-\lambda\right)_{+}$where $x_{+}=x$ if $x>0$ and $x_{+}=0$ if $x \leq 0$
+\begin{proof}
+    We have $\mathbf{X}^{T}\mathbf{X} = \mathbf{I}_{p}$, then we have $\hat\beta^{lr}= (\mathbf{X}^{T}\mathbf{X})^{-1}\mathbf{X}^{T}\mathbf{Y} = \mathbf{X}^{T}\mathbf{Y}$. Then we have
+    
+    then the explicit solution of the Lasso estimator is given by
+    \begin{align*}
+        \hat{\beta}^{\text {lasso }} &= \argmin_{\beta} \frac{1}{2}\|\mathbf{Y}-\mathbf{X}\beta\|_{2}^{2}+\lambda\|\beta\|_{1}\\
+        % &= \argmin_{\beta} \frac{1}{2}\|\mathbf{Y}-\mathbf{X}\beta\|_{2}^{2}+\lambda\|\beta\|_{1}\\
+        % &= \argmin_{\beta} \frac{1}{2}\|\mathbf{Y}-\mathbf{X}\beta\|_{2}^{2}+\lambda\sum_{j=1}^{p}|\beta_{j}|\\
+        &= \argmin_{\beta} \frac{1}{2}\left(\mathbf{Y}^{T}\mathbf{Y}-\mathbf{Y}^{T}\mathbf{X}\beta-\beta^{T}\mathbf{X}^{T}\mathbf{Y}+\beta^{T}\mathbf{X}^{T}\mathbf{X}\beta\right)+\lambda\sum_{j=1}^{p}|\beta_{j}|\\
+        &= \argmin_{\beta} \frac{1}{2}\left(-(\hat\beta^{lr})^T \beta- \beta^{T}\hat\beta^{lr}+\beta^{T}\beta\right)+\lambda\sum_{j=1}^{p}|\beta_{j}|\\
+        &= \argmin_{\beta} -\hat{\beta}^{lr} \cdot \beta+\frac{1}{2}\beta^{T}\beta+\lambda\sum_{j=1}^{p}|\beta_{j}|\\
+        &= \argmin_{\beta} \sum_{j=1}^{p}\left(-\hat{\beta}^{lr}_j \beta_j + \frac{1}{2}\beta_j^2+\lambda|\beta_j|\right).
+    \end{align*}
+    Since the loss function is separable, it suffices to minimize each component of $\beta$ separately. Consider the minimization of $\beta_j$ for $j=1,\ldots,p$. We have \begin{align*}
+        f'(\beta_j)\equiv \frac{\partial}{\partial \beta_j} \left(-\hat{\beta}^{lr}_j \beta_j + \frac{1}{2}\beta_j^2+\lambda|\beta_j|\right) &= \begin{cases}
+            -\hat{\beta}^{lr}_j + \beta_j + \lambda, & \text{if } \beta_j > 0\\
+            -\hat{\beta}^{lr}_j + \beta_j - \lambda, & \text{if } \beta_j < 0\\
+        \end{cases}
+     \end{align*}
+     Then we have
+     \begin{align*}
+        f'(\beta_j)\leq 0 \Leftrightarrow \begin{cases}
+            \beta_j \leq \hat{\beta}^{lr}_j - \lambda, & \text{if } \beta_j > 0\\
+            \beta_j \leq \hat{\beta}^{lr}_j + \lambda, & \text{if } \beta_j < 0\\
+        \end{cases}
+     \end{align*}
+     And if $\hat{\beta}^{lr}_j \in [-\lambda, \lambda]$, then we have
+        \begin{align*}
+            f'(\beta_j)=\begin{cases}
+                > 0, & \text{if } \beta_j > 0\\
+                = 0, & \text{if } \beta_j = 0\\
+                < 0, & \text{if } \beta_j < 0
+            \end{cases}
+        \end{align*}
+     Thus, combining the above condition, we have the minimizer of $f(\beta_j)$ 
+     \begin{align*}
+        \argmin_{\beta} f(\beta_j)=\begin{cases}
+            \hat{\beta}^{lr}_j - \lambda, & \text{if } \hat{\beta}^{lr}_j > \lambda\\
+            0, & \text{if } \hat{\beta}^{lr}_j \in [-\lambda, \lambda]\\
+            \hat{\beta}^{lr}_j + \lambda, & \text{if } \hat{\beta}^{lr}_j < -\lambda.
+        \end{cases}
+     \end{align*}
+     This can be written as
+        \begin{align*}
+            \argmin_{\beta_j} f(\beta_j)=\operatorname{sign}\left(\hat{\beta}^{lr}_j\right)\left(\left|\hat{\beta}^{lr}_j\right|-\lambda\right)_{+},
+        \end{align*}
+        for $j=1,\ldots,p$. 
+
+\end{proof}
+
+
+\section*{4 Review: Eigenvalues of $\mathrm{X}^{T} \mathrm{X}$}
+Show that all the eigenvalues of a matrix $\mathbf{X}^{T} \mathbf{X}$ are non-negative.
+\begin{proof}
+    % Suppose $\lambda$ is an eigenvalue of $\mathbf{X}^{T} \mathbf{X}$, and $v$ is the corresponding eigenvector. Then we have
+    % \begin{align*}
+    %     \mathbf{X}^{T} \mathbf{X} v &= \lambda v\\
+    %     v^{T}\mathbf{X}^{T} \mathbf{X} v &= \lambda v^{T}v\\
+    %     \|\mathbf{X}v\|^{2} &= \lambda \|v\|^{2}\\
+    %     \Rightarrow\lambda &\geq 0
+    % \end{align*}
+    % since $\|\mathbf{X}v\|^{2} \geq 0$ and $\|v\|^{2} \geq 0$.
+
+    Suppose $\mathbf{X}$ is a $n\times p$ matrix with rank $q\leq p$. Consider a SVD of $\mathbf{X}$, i.e., $\mathbf{X} = UDV^{T}$, where $U$ is a $n\times p$ matrix, $D$ is a $p\times p$ diagonal matrix, and $V$ is a $p\times p$ matrix. Then we have
+    \begin{align*}
+        \mathbf{X}^{T} \mathbf{X} &= VD^{T}U^{T}UDV^{T}\\
+        &= VD^{2}V^{T}\\
+        &= V\Lambda V^{T},
+    \end{align*}
+    where $\Lambda$ is a $p\times p$ diagonal matrix with $\Lambda_{ii} = D_{ii}^{2}$. Then for any eigenvector $v$ of $\mathbf{X}^{T} \mathbf{X}$, we have
+    \begin{align*}
+        \mathbf{X}^{T} \mathbf{X} v &= \lambda v\\
+        V\Lambda V^{T}v &= \lambda v\\
+        \Lambda V^{T}v &= \lambda V^{T}v\\
+        \Rightarrow \lambda &= \Lambda_{ii} \geq 0.
+    \end{align*}
+    That is, all the eigenvalues of $\mathbf{X}^{T} \mathbf{X}$ are non-negative. If $\mathbf{X}$ is of full rank, i.e., $q = p$, then all the eigenvalues of $\mathbf{X}^{T} \mathbf{X}$ are positive. Otherwise, the rank of $\mathbf{X}$ is $q < p$, and the last $p-q$ eigenvalues of $\mathbf{X}^{T} \mathbf{X}$ are zero. 
+
+\end{proof}
+
+\end{document}
