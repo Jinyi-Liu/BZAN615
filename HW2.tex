@@ -38,9 +38,8 @@ where $\epsilon$ is the error term that is independen of $\mathbf{X}$ and $x_{0}
         &= \mathbb{E}\left[\epsilon^{T}\mathbf{X}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} \epsilon\right]\\
         &= \mathbb{E}\left[tr\left(\epsilon^{T}\mathbf{X}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} \epsilon\right)\right]\\
         & = \mathbb{E}\left[tr\left(\mathbf{X}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} \epsilon\epsilon^{T}\right)\right]\\
-    % (\text{Skip one trace transformation})    &= \mathbb{E}\left[tr\left(\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} \epsilon\epsilon^{T}\mathbf{X}\right)\right]\\
-    \text{(Independence)}    &= \mathbb{E}\left[tr\left(\mathbf{X}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} (\sigma^{2}\mathbf{I})\right)\right]\\
-    &= \sigma^2 \mathbb{E}\left[tr\left(\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} \mathbf{X}\right)\right]\\
+       &= \mathbb{E}\left[tr\left(\mathbf{X}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} (\sigma^{2}\mathbf{I})\right)\right]\\
+       \text{(Independence)} &= \sigma^2 \mathbb{E}\left[tr\left(\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} \mathbf{X}^{T} \mathbf{X}\right)\right]\\
         &= \sigma^{2} \mathbb{E}\left[tr\left(\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}x_{0}^{T}\right)\right]\\
     (tr(BA^T)=tr(A^TB))    &= \sigma^{2} \mathbb{E}\left[tr\left(x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}\right)\right]\\
         &= \sigma^{2} \mathbb{E}\left[x_{0}^{T}\left(\mathbf{X}^{T} \mathbf{X}\right)^{-1} x_{0}\right].
@@ -75,7 +74,8 @@ Then we have
     \Rightarrow (\mathbf{X}^{T}\mathbf{X}+\lambda\mathbf{I})\beta &= \mathbf{X}^{T}\mathbf{Y}\\
     \Rightarrow \beta &= (\mathbf{X}^{T}\mathbf{X}+\lambda\mathbf{I})^{-1}\mathbf{X}^{T}\mathbf{Y},
 \end{align*}
-where the last step is valid since $\mathbf{X}^{T}\mathbf{X}+\lambda\mathbf{I}$ is invertible if $\lambda > 0$.
+where the last step is valid since $\mathbf{X}^{T}\mathbf{X}+\lambda\mathbf{I}$ is invertible if $\lambda > 0$. Also, \[\frac{\partial^2 f(\beta)}{\partial\beta^2}=2(\mathbf{X}^T\mathbf{X}+\lambda\mathbf{I})>0,\]
+i.e., the Hessian matrix is positive definite, so the solution is indeed a minimum.
 \end{proof}
 
 
@@ -150,15 +150,15 @@ Show that all the eigenvalues of a matrix $\mathbf{X}^{T} \mathbf{X}$ are non-ne
         &= VD^{2}V^{T}\\
         &= V\Lambda V^{T},
     \end{align*}
-    where $\Lambda$ is a $p\times p$ diagonal matrix with $\Lambda_{ii} = D_{ii}^{2}$. Then for any eigenvector $v$ of $\mathbf{X}^{T} \mathbf{X}$, we have
+    where $\Lambda$ is a $p\times p$ diagonal matrix with $\Lambda_{ii} = D_{ii}^{2}$. Then let $V=\begin{bmatrix}v_1 & \cdots & v_p\end{bmatrix}$, where $v_i$ is the $i$th column of $V$, we have
     \begin{align*}
-        \mathbf{X}^{T} \mathbf{X} v &= \lambda v\\
-        V\Lambda V^{T}v &= \lambda v\\
-        \Lambda V^{T}v &= \lambda V^{T}v\\
-        \Rightarrow \lambda &= \Lambda_{ii} \geq 0.
+        \mathbf{X}^{T} \mathbf{X} v_i &= V\Lambda V^{T}v_i\\
+        &= V\Lambda e_i\\
+        &= D_{ii}^{2}v_i,
     \end{align*}
-    That is, all the eigenvalues of $\mathbf{X}^{T} \mathbf{X}$ are non-negative. If $\mathbf{X}$ is of full rank, i.e., $q = p$, then all the eigenvalues of $\mathbf{X}^{T} \mathbf{X}$ are positive. Otherwise, the rank of $\mathbf{X}$ is $q < p$, and the last $p-q$ eigenvalues of $\mathbf{X}^{T} \mathbf{X}$ are zero. 
-
+    where $e_i$ is the $i$th column of the identity matrix. Thus, $D_{ii}^{2}$ is an eigenvalue of $\mathbf{X}^{T} \mathbf{X}$, and $v_i$ is the corresponding eigenvector. Since $D_{ii}^{2}\geq 0$, we have all the eigenvalues of $\mathbf{X}^{T} \mathbf{X}$ are non-negative. 
+    
+    If $\mathbf{X}$ is of full rank, then $D_{ii}^{2}>0$ for all $i$, and all the eigenvalues of $\mathbf{X}^{T} \mathbf{X}$ are positive. Otherwise, if $D_{ii}^{2}=0$ for some $i$, then $V\Lambda V^{T}$ is not full rank, and $\mathbf{X}^{T} \mathbf{X}$ is not full rank, a contradiction.
 \end{proof}
 
 \end{document}
